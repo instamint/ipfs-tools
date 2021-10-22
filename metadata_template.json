@@ -1,0 +1,10 @@
+{
+    "name": "$NAME",
+    "description": "$DESCRIPTION",
+    "external_url": "$WASABI_URL",
+    "instagram_id": "$INSTAGRAM_ID",
+    "instagram_share_url": "$INSTAGRAM_SHARE_URL",
+    "instagram_direct_link": "$INSTAGRAM_DIRECT_URL",
+    "image_ipfs_cid": "$IMAGE_IPFS_CID",
+    "contract_address": "$CONTRACT_ADDRESS"
+}
