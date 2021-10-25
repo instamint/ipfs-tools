@@ -38,7 +38,7 @@ for image in image_list:
         f.write(r.content)
 
     image_files = {
-        image_name: open(image_path),
+        image_name: open(image_path, "rb"),
     }
     response = requests.post('https://ipfs.infura.io:5001/api/v0/add', files=image_files, auth=(infura_ipfs_project_id,infura_ipfs_project_secret))
     ipfs_image_data = response.json()
@@ -67,7 +67,7 @@ for image in image_list:
         json.dump(metadata_json, fp, default=str)
 
     json_files = {
-        metadata_json_file_name: open(metadata_json_file_path),
+        metadata_json_file_name: open(metadata_json_file_path, "rb"),
     }
 
     response = requests.post('https://ipfs.infura.io:5001/api/v0/add', files=json_files, auth=(infura_ipfs_project_id,infura_ipfs_project_secret))
