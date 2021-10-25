@@ -24,3 +24,16 @@ except KeyError as e:
 
 with open('metadata_template.json') as f:
   json_template = json.load(f)
+
+df = pandas.read_csv('input.csv', index_col='ID', parse_dates=['Vintage Date'])
+#wasabi_images = df["WasabiURL"]
+
+image_list = df.values.tolist()
+
+for image in image_list:
+    image_url = image[4]
+    image_name =urllib.parse.urlparse(image_url).path.rstrip('/').split('/')[-1]
+    image_path = "./output/" + image_name
+    r = requests.get(image_url)
+    with open(image_path, "wb") as f:
+        f.write(r.content)
