@@ -26,7 +26,6 @@ with open('metadata_template.json') as f:
   json_template = json.load(f)
 
 df = pandas.read_csv('input.csv')
-#wasabi_images = df["WasabiURL"]
 
 image_list = df.values.tolist()
 
@@ -39,7 +38,7 @@ for image in image_list:
         f.write(r.content)
 
     image_files = {
-        image_name: image_path,
+        image_name: open(image_path),
     }
     response = requests.post('https://ipfs.infura.io:5001/api/v0/add', files=image_files, auth=(infura_ipfs_project_id,infura_ipfs_project_secret))
     ipfs_image_data = response.json()
@@ -68,7 +67,7 @@ for image in image_list:
         json.dump(metadata_json, fp, default=str)
 
     json_files = {
-        metadata_json_file_name: metadata_json_file_path,
+        metadata_json_file_name: open(metadata_json_file_path),
     }
 
     response = requests.post('https://ipfs.infura.io:5001/api/v0/add', files=json_files, auth=(infura_ipfs_project_id,infura_ipfs_project_secret))
