@@ -8,6 +8,7 @@ import pandas
 import shutil
 
 output_directory = './output'
+wallet_address = "0x6FCA0F70BcC4a86786c79414F8E84BD542F7c250"
 if os.path.exists(output_directory):
     shutil.rmtree(output_directory)
     os.makedirs(output_directory)
@@ -55,7 +56,7 @@ for image in image_list:
     metadata_json["instagram_share_url"] = image[2]
     metadata_json["instagram_direct_link"] = image[3]
     metadata_json["image_ipfs_cid"] = ipfs_image_data["Hash"]
-    metadata_json["contract_address"]
+    metadata_json["contract_address"] = wallet_address
     metadata_json["vintage_date"]=image[5]
     metadata_json["token_id"] = image[0]
 
