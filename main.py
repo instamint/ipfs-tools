@@ -77,3 +77,17 @@ for image in image_list:
     image.append("https://ipfs.io/ipfs/" + ipfs_metadata_data["Hash"])
     image.append(ipfs_image_data["Hash"])
     image.append(image[0])
+colnames = ['ID',
+ 'Instagram Username',
+ 'Instagram Pic Share URL',
+ 'Instagram Direct Link',
+ 'WasabiURL',
+ 'Vintage Date',
+ 'Image IPFS CID',
+ 'Image IPFS URL',
+ 'Metadata CID',
+ 'Metadata IPFS URL',
+ 'Contract Address',
+ 'Token ID']
+output_df = pandas.DataFrame(image_list, columns=colnames)
+output_df.to_csv('output.csv', index=False)
