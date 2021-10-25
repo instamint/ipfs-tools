@@ -64,3 +64,16 @@ for image in image_list:
     metadata_json_file_path = "./output/" + metadata_json_file_name
     with open(metadata_json_file_path, 'w') as fp:
         json.dump(metadata_json, fp, default=str)
+    with open(metadata_json_file_path, 'w') as fp:
+        json.dump(metadata_json, fp, default=str)
+
+    json_files = {
+        metadata_json_file_name: metadata_json_file_path,
+    }
+
+    response = requests.post('https://ipfs.infura.io:5001/api/v0/add', files=json_files, auth=(infura_ipfs_project_id,infura_ipfs_project_secret))
+    ipfs_metadata_data = response.json()
+    image.append(ipfs_metadata_data["Hash"])
+    image.append("https://ipfs.io/ipfs/" + ipfs_metadata_data["Hash"])
+    image.append(ipfs_image_data["Hash"])
+    image.append(image[0])
