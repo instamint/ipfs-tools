@@ -74,7 +74,7 @@ for image in image_list:
     ipfs_metadata_data = response.json()
     image.append(ipfs_metadata_data["Hash"])
     image.append("https://ipfs.io/ipfs/" + ipfs_metadata_data["Hash"])
-    image.append(ipfs_image_data["Hash"])
+    image.append("0x6FCA0F70BcC4a86786c79414F8E84BD542F7c250")
     image.append(image[0])
 colnames = ['ID',
  'Instagram Username',
