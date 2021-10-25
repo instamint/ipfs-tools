@@ -25,7 +25,7 @@ except KeyError as e:
 with open('metadata_template.json') as f:
   json_template = json.load(f)
 
-df = pandas.read_csv('input.csv', index_col='ID', parse_dates=['Vintage Date'])
+df = pandas.read_csv('input.csv')
 #wasabi_images = df["WasabiURL"]
 
 image_list = df.values.tolist()
