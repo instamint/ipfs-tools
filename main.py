@@ -37,3 +37,30 @@ for image in image_list:
     r = requests.get(image_url)
     with open(image_path, "wb") as f:
         f.write(r.content)
+
+    image_files = {
+        image_name: image_path,
+    }
+    response = requests.post('https://ipfs.infura.io:5001/api/v0/add', files=image_files, auth=(infura_ipfs_project_id,infura_ipfs_project_secret))
+    ipfs_image_data = response.json()
+    image.append(ipfs_image_data["Hash"])
+    image.append("https://ipfs.io/ipfs/" + ipfs_image_data["Hash"])
+
+    metadata_json = copy.deepcopy(json_template)
+    metadata_json["name"] = image_name
+    metadata_json["description"] = image_name
+    # 'name', 'description', 'external_url', 'instagram_username', 'instagram_share_url',
+    # 'instagram_direct_link', 'image_ipfs_cid', 'contract_address', 'vintage_date', 'token_id'
+    metadata_json["external_url"] = "https://ipfs.io/ipfs/" + ipfs_image_data["Hash"]
+    metadata_json["instagram_username"] = image[1]
+    metadata_json["instagram_share_url"] = image[2]
+    metadata_json["instagram_direct_link"] = image[3]
+    metadata_json["image_ipfs_cid"] = ipfs_image_data["Hash"]
+    metadata_json["contract_address"]
+    metadata_json["vintage_date"]=image[5]
+    metadata_json["token_id"] = image[0]
+
+    metadata_json_file_name = Path(image_path).stem + ".json"
+    metadata_json_file_path = "./output/" + metadata_json_file_name
+    with open(metadata_json_file_path, 'w') as fp:
+        json.dump(metadata_json, fp, default=str)
