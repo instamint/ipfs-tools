@@ -21,3 +21,6 @@ try:
 except KeyError as e:
     print(f"'{e.args[0]}'s  Environment variable is not properly set. Aborting")
     sys.exit(1)
+
+with open('metadata_template.json') as f:
+  json_template = json.load(f)
