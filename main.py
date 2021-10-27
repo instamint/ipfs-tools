@@ -51,8 +51,9 @@ with open(META_DATA_TEMPLATE_FILE) as f:
   json_template = json.load(f)
 
 df = pandas.read_csv(INPUT_FILE)
-
 image_list = df.to_dict(orient='records')
+sha256_list = []
+
 for image in image_list:
     image["Instagram Username"] = image["Instagram ID"]
     image_url = image["WasabiURL"]
@@ -68,6 +69,12 @@ for image in image_list:
     # Calculate sha25 hash of image
     image["SHA-256"] = generate_sha256(image_path)
     
+    # Check for duplicates
+    if image["SHA-256"] in sha256_list:
+        image["Remarks"] = "Duplicate image"
+        continue
+    sha256_list.append(image["SHA-256"])
+
     # Upload image to ipfs
     image_files = {
         image_name: open(image_path, "rb"),
@@ -120,6 +127,7 @@ colnames = ['ID',
  'Metadata IPFS URL',
  'Contract Address',
  'Token ID',
- 'SHA-256']
+ 'SHA-256',
+ 'Remarks',]
 output_df = pandas.DataFrame(image_list, columns=colnames)
 output_df.to_csv(OUTPUT_FILE, index=False,na_rep='')
