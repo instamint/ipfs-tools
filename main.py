@@ -8,8 +8,8 @@ import shutil
 import hashlib
 
 # Base Configurations
-INPUT_FILE = 'test.csv'
-OUTPUT_FILE = 'output_test.csv'
+INPUT_FILE = 'input.csv'
+OUTPUT_FILE = 'output.csv'
 META_DATA_TEMPLATE_FILE = 'metadata_template.json'
 OUTPUT_DIRECTORY = './output/'
 WALLET_ADDRESS = "0x6FCA0F70BcC4a86786c79414F8E84BD542F7c250"
