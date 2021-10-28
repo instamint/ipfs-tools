@@ -32,7 +32,7 @@ try:
     INFURA_IPFS_PROJECT_ID= os.environ['INFURA_IPFS_PROJECT_ID']
     INFURA_IPFS_PROJECT_SECRET= os.environ['INFURA_IPFS_PROJECT_SECRET']
 except KeyError as e:
-    print(f"'{e.args[0]}'s  Environment variable is not properly set. Aborting")
+    logger.error(f"'{e.args[0]}'s  Environment variable is not properly set. Aborting")
     sys.exit(1)
 
 def generate_sha256(filepath):
@@ -64,7 +64,14 @@ for image in image_list:
     image_path = OUTPUT_DIRECTORY + image_name
     
     # Save image from wasabiurl to output folder
-    r = requests.get(image_url)
+    try:
+        r = requests.get(image_url)
+    except Exception as err:
+     logger.error(f"[!] Exception: {err}")
+     image["Remarks"] = "Failed to download image"
+     image["Status"] = "Failed"
+     continue
+
     with open(image_path, "wb") as f:
         f.write(r.content)
             
@@ -75,6 +82,7 @@ for image in image_list:
     # Check for duplicates
     if image["SHA-256"] in sha256_list:
         image["Remarks"] = "Duplicate image"
+        image["Status"] = "Skipped"
         logger.info(f"Inage '{image['ID']}' is duplicate")
         continue
     sha256_list.append(image["SHA-256"])
@@ -83,7 +91,14 @@ for image in image_list:
     image_files = {
         image_name: open(image_path, "rb"),
     }
-    response = requests.post(INFURA_IPFS_API_ADD_URL, files=image_files, auth=(INFURA_IPFS_PROJECT_ID,INFURA_IPFS_PROJECT_SECRET))
+    try:
+        response = requests.post(INFURA_IPFS_API_ADD_URL, files=image_files, auth=(INFURA_IPFS_PROJECT_ID,INFURA_IPFS_PROJECT_SECRET))
+    except Exception as err:
+        logger.error(f"[!] Exception: {err}")
+        image["Remarks"] = "Failed to upload image"
+        image["Status"] = "Failed"
+        continue
+
     ipfs_image_data = response.json()
     image["Image IPFS CID"] = ipfs_image_data["Hash"]
     image["Image IPFS URL"] = IPFS_BASE_URL + ipfs_image_data["Hash"]
@@ -111,12 +126,20 @@ for image in image_list:
         metadata_json_file_name: open(metadata_json_file_path, "rb"),
     }
 
-    response = requests.post(INFURA_IPFS_API_ADD_URL, files=json_files, auth=(INFURA_IPFS_PROJECT_ID,INFURA_IPFS_PROJECT_SECRET))
+    try:
+        response = requests.post(INFURA_IPFS_API_ADD_URL, files=json_files, auth=(INFURA_IPFS_PROJECT_ID,INFURA_IPFS_PROJECT_SECRET))
+    except Exception as err:
+        logger.error(f"[!] Exception: {err}")
+        image["Remarks"] = "Failed to upload metadata"
+        image["Status"] = "Failed"
+        continue
+
     ipfs_metadata_data = response.json()
     image["Metadata CID"] = ipfs_metadata_data["Hash"]
     image["Metadata IPFS URL"] = IPFS_BASE_URL + ipfs_metadata_data["Hash"]
     image["Contract Address"] = WALLET_ADDRESS
     image["Token ID"] = image["ID"]
+    image["Status"] = "Success"
 
 #Write image_list dictionary to csv
 colnames = ['ID',
@@ -132,6 +155,8 @@ colnames = ['ID',
  'Contract Address',
  'Token ID',
  'SHA-256',
- 'Remarks',]
+ 'Status',
+ 'Remarks',
+ ]
 output_df = pandas.DataFrame(image_list, columns=colnames)
 output_df.to_csv(OUTPUT_FILE, index=False,na_rep='')
