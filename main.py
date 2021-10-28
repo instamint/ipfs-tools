@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 import pandas
 import shutil
 import hashlib
+import log
+
+logger = log. get_logger(__name__)
 
 # Base Configurations
 INPUT_FILE = 'input.csv'
@@ -72,6 +75,7 @@ for image in image_list:
     # Check for duplicates
     if image["SHA-256"] in sha256_list:
         image["Remarks"] = "Duplicate image"
+        logger.info(f"Inage '{image['ID']}' is duplicate")
         continue
     sha256_list.append(image["SHA-256"])
 
